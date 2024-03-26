@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "python-test-cases", "python-test-cases\python-test-cases.csproj", "{AC70894D-FFB8-419F-8854-15EE899727A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC70894D-FFB8-419F-8854-15EE899727A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC70894D-FFB8-419F-8854-15EE899727A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC70894D-FFB8-419F-8854-15EE899727A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC70894D-FFB8-419F-8854-15EE899727A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3DFC5D4-1BAF-44D3-8967-FE849CC4FB07}
+	EndGlobalSection
+EndGlobal
