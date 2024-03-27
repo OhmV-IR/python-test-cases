@@ -41,7 +41,7 @@ while (true)
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardInput = true;
-
+        List<string> output = new List<string>();
         using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
         {
             process.OutputDataReceived += (sender, e) =>
@@ -52,7 +52,7 @@ while (true)
                 }
                 else
                 {
-                    File.AppendAllText(Path.Combine(currentFolder, "results.txt"), e.Data + "\n");
+                    output.Add(e.Data);
                 }
             };
             process.Start();
@@ -75,6 +75,13 @@ while (true)
             outputWaitHandle.WaitOne(timeout))
             {
                 // Process completed. Check process.ExitCode here.
+                var finalOutput = @"""""""";
+                for(int a = 0; a < output.Count; a++)
+                {
+                    finalOutput = finalOutput + output[a];
+                }
+                finalOutput = finalOutput + @"""""""" + "\n";
+                File.AppendAllText(Path.Combine(currentFolder, "results.txt"), finalOutput);
             }
             else
             {
