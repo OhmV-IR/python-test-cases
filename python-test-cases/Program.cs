@@ -27,50 +27,59 @@ catch
 string fileToRun = testsFile[0];
 // Delete any existing text
 File.WriteAllText(Path.Combine(currentFolder, "results.txt"), "");
-using (Process process = new Process())
+var counter = 0;
+while (true)
 {
-    process.StartInfo.FileName = "python";
-    process.StartInfo.Arguments = fileToRun;
-    process.StartInfo.UseShellExecute = false;
-    process.StartInfo.RedirectStandardOutput = true;
-    process.StartInfo.RedirectStandardInput = true;
-
-    using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+    if (counter == testsFile.Length)
     {
-        process.OutputDataReceived += (sender, e) => {
-            if (e.Data == null)
-            {
-                outputWaitHandle.Set();
-            }
-            else
-            {
-                File.AppendAllText(Path.Combine(currentFolder, "results.txt"), e.Data + "\n");
-            }
-        };
+        break;
+    }
+    using (Process process = new Process())
+    {
+        process.StartInfo.FileName = "python";
+        process.StartInfo.Arguments = fileToRun;
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.RedirectStandardOutput = true;
+        process.StartInfo.RedirectStandardInput = true;
 
-        process.Start();
-        var counter = 0;
-        while (true)
+        using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
         {
-            if (testsFile[counter] == "endofcase")
+            process.OutputDataReceived += (sender, e) =>
             {
-                break;
+                if (e.Data == null)
+                {
+                    outputWaitHandle.Set();
+                }
+                else
+                {
+                    File.AppendAllText(Path.Combine(currentFolder, "results.txt"), e.Data + "\n");
+                }
+            };
+            process.Start();
+            Thread.Sleep(500);
+            while (true)
+            {
+                if (testsFile[counter] == "endofcase")
+                {
+                    counter = counter + 1;
+                    break;
+                }
+                else
+                {
+                    process.StandardInput.WriteLine(testsFile[counter]);
+                    counter = counter + 1;
+                }
+            }
+            process.BeginOutputReadLine();
+            if (process.WaitForExit(timeout) &&
+            outputWaitHandle.WaitOne(timeout))
+            {
+                // Process completed. Check process.ExitCode here.
             }
             else
             {
-                process.StandardInput.WriteLine(testsFile[counter]);
-                counter = counter + 1;
+                Console.WriteLine("Test timed out");
             }
-        }
-        process.BeginOutputReadLine();
-        if (process.WaitForExit(timeout) &&
-        outputWaitHandle.WaitOne(timeout))
-        {
-            // Process completed. Check process.ExitCode here.
-        }
-        else
-        {
-            Console.WriteLine("Test timed out");
         }
     }
 }
