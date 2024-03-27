@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "python-test-cases": {
+      "commandName": "Project"
+    }
+  }
+}
