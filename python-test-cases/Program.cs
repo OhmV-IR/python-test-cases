@@ -1,8 +1,5 @@
 ﻿using System.Reflection;
 using System.Diagnostics;
-using System;
-using System.Text;
-using System.Threading;
 
 int timeout;
 try
@@ -17,8 +14,15 @@ var currentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Locati
 string[] testsFile = new string[1];
 try
 {
-    testsFile = File.ReadAllLines(Path.Combine(currentFolder, "tests.txt"));
-}
+    if (args.Length > 0)
+    {
+        testsFile = File.ReadAllLines(args[0]);
+    }
+    else
+    {
+        testsFile = File.ReadAllLines(Path.Combine(currentFolder, "tests.txt"));
+    }
+    }
 catch
 {
     Console.WriteLine("Tests file not found or contained invalid data, exiting.");
@@ -56,10 +60,15 @@ while (true)
                 {
                     if (inputUsed < input.Count)
                     {
-                        //output.Add(input[inputUsed]);
+                        var newStrings = e.Data.Split(':');
+                        output.Add(newStrings[0] + ": " + input[inputUsed]);
+                        output.Add(newStrings[1]);
                         inputUsed++;
                     }
-                    output.Add(e.Data);
+                    else
+                    {
+                        output.Add(e.Data);
+                    }
                 }
             };
             process.Start();
@@ -89,7 +98,14 @@ while (true)
                     finalOutput = finalOutput + output[a] + "\n";
                 }
                 finalOutput = finalOutput + @"""""""" + "\n";
-                File.AppendAllText(Path.Combine(currentFolder, "results.txt"), finalOutput);
+                if (args.Length > 1)
+                {
+                    File.AppendAllText(args[1], finalOutput);
+                }
+                else
+                {
+                    File.AppendAllText(Path.Combine(currentFolder, "results.txt"), finalOutput);
+                }
             }
             else
             {
