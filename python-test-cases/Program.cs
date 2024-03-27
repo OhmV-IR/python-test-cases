@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 
 int timeout;
+bool first = true;
+bool second = true;
 try
 {
     timeout = int.Parse(args[0]) * 1000;
@@ -52,11 +54,17 @@ while (true)
                 }
                 else
                 {
-                    output.Add(e.Data);
+                    if (first) {
+                        first = false;
+                    }
+                    else
+                    {
+                        output.Add(e.Data);
+                    }
                 }
             };
             process.Start();
-            Thread.Sleep(500);
+            Thread.Sleep(200);
             while (true)
             {
                 if (testsFile[counter] == "endofcase")
