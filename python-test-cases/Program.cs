@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading;
 
 int timeout;
-bool first = true;
-bool second = true;
 try
 {
     timeout = int.Parse(args[0]) * 1000;
@@ -29,9 +27,10 @@ catch
 string fileToRun = testsFile[0];
 // Delete any existing text
 File.WriteAllText(Path.Combine(currentFolder, "results.txt"), "");
-var counter = 0;
+var counter = 1;
 while (true)
 {
+    int inputUsed = 0;
     if (counter == testsFile.Length)
     {
         break;
@@ -44,6 +43,7 @@ while (true)
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardInput = true;
         List<string> output = new List<string>();
+        List<string> input = new List<string>();
         using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
         {
             process.OutputDataReceived += (sender, e) =>
@@ -54,13 +54,12 @@ while (true)
                 }
                 else
                 {
-                    if (first) {
-                        first = false;
-                    }
-                    else
+                    if (inputUsed < input.Count)
                     {
-                        output.Add(e.Data);
+                        //output.Add(input[inputUsed]);
+                        inputUsed++;
                     }
+                    output.Add(e.Data);
                 }
             };
             process.Start();
@@ -74,6 +73,7 @@ while (true)
                 }
                 else
                 {
+                    input.Add(testsFile[counter]);
                     process.StandardInput.WriteLine(testsFile[counter]);
                     counter = counter + 1;
                 }
@@ -83,10 +83,10 @@ while (true)
             outputWaitHandle.WaitOne(timeout))
             {
                 // Process completed. Check process.ExitCode here.
-                var finalOutput = @"""""""";
-                for(int a = 0; a < output.Count; a++)
+                var finalOutput = @"""""""" + "\n";
+                for (int a = 0; a < output.Count; a++)
                 {
-                    finalOutput = finalOutput + output[a];
+                    finalOutput = finalOutput + output[a] + "\n";
                 }
                 finalOutput = finalOutput + @"""""""" + "\n";
                 File.AppendAllText(Path.Combine(currentFolder, "results.txt"), finalOutput);
