@@ -2,6 +2,11 @@
 using System.Diagnostics;
 
 int timeout;
+if (args.Length > 0 && args[0] == "version")
+{
+    Console.WriteLine("v1.0");
+    Environment.Exit(0);
+}
 try
 {
     timeout = int.Parse(args[0]) * 1000;
@@ -30,7 +35,14 @@ catch
 }
 string fileToRun = testsFile[0];
 // Delete any existing text
-File.WriteAllText(Path.Combine(currentFolder, "results.txt"), "");
+if (args.Length > 1)
+{
+    File.WriteAllText(args[1], "");
+}
+else
+{
+    File.WriteAllText(Path.Combine(currentFolder, "results.txt"), "");
+}
 var counter = 1;
 while (true)
 {
